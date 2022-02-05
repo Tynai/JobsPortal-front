@@ -1,24 +1,29 @@
-import logo from './logo.svg';
 import './App.css';
+import 'antd/dist/antd.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import JobInfo from './pages/JobInfo';
+import AppliedJob from './pages/AppliedJob';
+import Profile from './pages/Profile';
+import PostJob from './pages/PostJob';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+    <div className='App'>
+
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/jobinfo' element={<JobInfo />} />
+          <Route path='/appliedjob' element={<AppliedJob />} />
+          <Route path='/postjob' element={<PostJob />} />
+          <Route path='/profile' element={<Profile />} />
+        </Routes>
+      </BrowserRouter>
+
     </div>
+
   );
 }
 
