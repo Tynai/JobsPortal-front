@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import HeaderSider from "../components/HeaderSider";
 import { Row, Col, Form, Tabs, Input, Button, Select } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "../redux/actions/userActions";
-import { postJob } from "../redux/actions/jobActions";
+import { editJob, postJob } from "../redux/actions/jobActions";
+
 const { TextArea } = Input;
 const { TabPane } = Tabs;
 const { Option } = Select;
-function PostJob() {
+function EditJob({ match }) {
   const [jobInfo, setJobInfo] = useState({});
   const [activeTab, setActiveTab] = useState("0");
   const dispatch = useDispatch()
@@ -17,15 +18,22 @@ function PostJob() {
   }
   function onFinalFormFinish(values) {
     const finalObj = { ...jobInfo, ...values };
+
+    finalObj._id = match.params.id
     console.log(finalObj)
-    dispatch(postJob(finalObj))
+    dispatch(editJob(finalObj))
   }
+  const { jobs } = useSelector(state => state.jobsReducer)
+
+  const job = jobs.find(job => job._id == match.params.id)
+
+  console.log(job)
   return (
     <div>
-      <HeaderSider>
+      <HeaderSider  >
         <Tabs defaultActiveKey="0" activeKey={activeTab}>
           <TabPane tab="Job Info" key="0">
-            <Form layout="vertical" onFinish={onFirstFormFinish}>
+            <Form layout="vertical" onFinish={onFirstFormFinish} initialValues={job}>
               <Row gutter={16}>
                 <Col lg={8} sm={24}>
                   <Form.Item
@@ -128,7 +136,7 @@ function PostJob() {
             </Form>
           </TabPane>
           <TabPane tab="Company Info" key="1">
-            <Form layout='vertical' onFinish={onFinalFormFinish}>
+            <Form layout='vertical' onFinish={onFinalFormFinish} initialValues={job}>
               <Row gutter={16}>
                 <Col lg={8} sm={24}>
                   <Form.Item
@@ -170,7 +178,7 @@ function PostJob() {
 
               </Row>
               <Button onClick={() => { setActiveTab("0") }}>Previous</Button>
-              <Button htmlType="submit">Post Job</Button>
+              <Button htmlType="submit">Edit Job</Button>
             </Form>
           </TabPane>
         </Tabs>
@@ -179,4 +187,4 @@ function PostJob() {
   );
 }
 
-export default PostJob;
+export default EditJob;

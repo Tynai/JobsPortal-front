@@ -1,21 +1,27 @@
 import { Layout, Menu } from 'antd';
-import './headerSider.scss';
 import React from 'react';
+import './headerSider.scss'
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  UserOutlined,
+  PlusSquareOutlined,
   VideoCameraOutlined,
   UploadOutlined,
+  HomeOutlined,
+  UserOutlined,
+  PlusOutlined,
+  CheckOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import Filter from '../Filter';
 
 const { Header, Sider, Content } = Layout;
 
 class HeaderSider extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       collapsed: false,
     };
@@ -27,39 +33,69 @@ class HeaderSider extends React.Component {
     });
   };
 
+  logout = () => {
+    localStorage.removeItem('user')
+    window.location.reload()
+  }
+
   render() {
+    const user = JSON.parse(localStorage.getItem('user'))
     return (
       <Layout>
-        <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
-          <div className="logo">
-
-            {this.state.collapsed ? (<h1 className='logo-title'>JP</h1>) : (<h1 className='logo-title'>JobsPortal</h1>)}
-
+        <Sider trigger={null} collapsible collapsed={this.state.collapsed}
+          style={{ position: 'sticky', overflow: 'auto', height: '100%', top: 0 }}
+        >
+          <div className="logo" >
+            <Link to='/'>{this.state.collapsed ? (<h1>JP</h1>) : (<h1>Job Portal</h1>)}</Link>
           </div>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={[window.location.pathname]}>
-            <Menu.Item key="/" icon={<UserOutlined />}>
+            <Menu.Item key="/" icon={<HomeOutlined />}>
               <Link to='/'>Home</Link>
             </Menu.Item>
-            <Menu.Item key="/profile" icon={<VideoCameraOutlined />}>
+            <Menu.Item key="/profile" icon={<UserOutlined />}>
               <Link to='/profile'>Profile</Link>
             </Menu.Item>
-            <Menu.Item key="/jobinfo" icon={<UploadOutlined />}>
-              <Link to='/jobinfo'>JobInfo</Link>
+            <Menu.Item key="/appliedjobs" icon={<PlusSquareOutlined />}>
+              <Link to='/appliedjob'>Applied Jobs</Link>
             </Menu.Item>
-            <Menu.Item key="/postjob" icon={<UploadOutlined />}>
-              <Link to='/postjob'>PostJob</Link>
+
+            <Menu.Item key="/postjob" icon={<PlusOutlined />}>
+              <Link to='/postjob'>Post Job</Link>
             </Menu.Item>
-            <Menu.Item key="/appliedjob" icon={<UploadOutlined />}>
-              <Link to='/appliedjob'>AppliedJob</Link>
+
+            <Menu.Item key="/postedjobs" icon={<CheckOutlined />}>
+              <Link to='/postedjobs'>Posted</Link>
+            </Menu.Item>
+
+            <Menu.Item key="/logout" icon={<LogoutOutlined />}>
+              <Link onClick={this.logout}>Logout</Link>
             </Menu.Item>
           </Menu>
         </Sider>
         <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0 }}>
-            {React.createElement(this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-              className: 'trigger',
-              onClick: this.toggle,
-            })}
+          <Header className="site-layout-background" style={{ padding: 0, position: 'sticky', overflow: 'auto', top: 0, zIndex: 9999 }}>
+
+            <div className="flex justify-content-between">
+
+              <div>
+                {React.createElement(this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+                  className: 'trigger',
+                  onClick: this.toggle,
+                })}
+              </div>
+
+              <div>
+                <Filter />
+              </div>
+
+              <div style={{ display: this.state.collapsed ? 'none' : 'inline' }}>
+                <h5 className="mr-2"><b>{user.username}</b></h5>
+              </div>
+
+            </div>
+
+
+
           </Header>
           <Content
             className="site-layout-background"
@@ -72,7 +108,7 @@ class HeaderSider extends React.Component {
             {this.props.children}
           </Content>
         </Layout>
-      </Layout >
+      </Layout>
     );
   }
 }
